@@ -7,4 +7,4 @@
 [api 명세 링크](https://m2nsp.gitbook.io/m2nsp/everytime)
 - ERD <br>
 ![database_erd](./database_erd.png) <br>
-![erd 링크](https://www.erdcloud.com/d/CxvS2pMFYYod7CuC2)
+[erd 링크](https://www.erdcloud.com/d/CxvS2pMFYYod7CuC2)
