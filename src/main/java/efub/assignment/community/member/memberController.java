@@ -1,8 +1,11 @@
 package efub.assignment.community.member;
 
+import efub.assignment.community.member.dto.EmailUpdateRequestDTO;
 import efub.assignment.community.member.dto.MemberRequestDTO;
 import efub.assignment.community.member.domain.Member;
 import efub.assignment.community.member.dto.MemberResponseDTO;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,9 +20,9 @@ public class memberController {
 
     //회원가입 API
     @PostMapping("signup")
-    public String registerMember(@RequestBody MemberRequestDTO requestDTO){
-        memberService.registerMember(requestDTO);
-        return "회원가입이 완료되었습니다!";
+    public ResponseEntity<MemberResponseDTO> registerMember(@RequestBody MemberRequestDTO requestDTO){
+        MemberResponseDTO responseDTO = memberService.registerMember(requestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
     // memberId에 해당하는 회원 정보 조회
@@ -29,11 +32,11 @@ public class memberController {
     }
 
     // 회원 정보 수정
-    // 이메일 변경 - 변환된 내용 반환하도록 변경해야됨
+    // 이메일 변경
     @PatchMapping("/{memberId}/email")
-    public void changeEmail(@PathVariable Long memberId,
-                                 @RequestParam String newEmail){
-        memberService.changeEmail(memberId, newEmail);
+    public ResponseEntity<MemberResponseDTO> changeEmail(@PathVariable Long memberId, @RequestBody EmailUpdateRequestDTO request){
+        MemberResponseDTO responseDTO = memberService.changeEmail(memberId, request.getNewEmail());
+        return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }
 
     // 닉네임 변경

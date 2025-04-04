@@ -17,7 +17,7 @@ public class MemberService {
 
     //회원 가입
     @Transactional
-    public Member registerMember(MemberRequestDTO requestDTO){
+    public MemberResponseDTO registerMember(MemberRequestDTO requestDTO){
         //중복 검사
         validateDuplicateMember(requestDTO.getStudentNumber(), requestDTO.getEmail());
 
@@ -29,7 +29,16 @@ public class MemberService {
                 requestDTO.getEmail(),
                 requestDTO.getPassword()
         );
-        return memberRepository.save(newMember);
+        Member savedMember = memberRepository.save(newMember);
+
+        //MemberResponseDTO로 변환
+        return new MemberResponseDTO(
+                savedMember.getMemberId(),
+                savedMember.getStudentNumber(),
+                savedMember.getNickname(),
+                savedMember.getSchool(),
+                savedMember.getEmail()
+        );
     }
 
     //회원 조회
@@ -54,7 +63,7 @@ public class MemberService {
 
     // 이메일 변경
     @Transactional
-    public void changeEmail(Long memberId, String newEmail){
+    public MemberResponseDTO changeEmail(Long memberId, String newEmail){
         Member member = findMemberByMemberId(memberId);
 
         //중복 검사
@@ -62,6 +71,15 @@ public class MemberService {
             throw new IllegalArgumentException("이미 사용 중인 이메일 입니다");
         }
         member.changeEmail(newEmail);
+
+        //변경된 회원 정보 DTO로 변환 후 반환
+        return new MemberResponseDTO(
+                member.getMemberId(),
+                member.getStudentNumber(),
+                member.getNickname(),
+                member.getSchool(),
+                member.getEmail()
+        );
     }
 
     // 비밀번호 변경
