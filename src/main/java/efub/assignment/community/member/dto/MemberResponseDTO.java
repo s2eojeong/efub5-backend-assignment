@@ -6,12 +6,12 @@ import efub.assignment.community.member.domain.Member;
 // 회원 조회 시 응답 DTO
 public class MemberResponseDTO {
     private Long memberId;
-    private int studentNumber;
+    private String studentNumber;
     private String nickname;
     private String school;
     private String email;
 
-    public MemberResponseDTO(Long memberId, int studentNumber, String nickname, String school, String email){
+    public MemberResponseDTO(Long memberId, String studentNumber, String nickname, String school, String email){
         this.memberId = memberId;
         this.studentNumber = studentNumber;
         this.nickname = nickname;
@@ -23,7 +23,7 @@ public class MemberResponseDTO {
         return memberId;
     }
 
-    public int getStudentNumber(){
+    public String getStudentNumber(){
         return studentNumber;
     }
 
@@ -37,5 +37,16 @@ public class MemberResponseDTO {
 
     public String getEmail(){
         return email;
+    }
+
+    //DTO 변환 시 사용할 메소드
+    public static MemberResponseDTO from (Member member){
+        return new MemberResponseDTO(
+                member.getMemberId(),
+                member.getStudentNumber(),
+                member.getNickname(),
+                member.getSchool(),
+                member.getEmail()
+        );
     }
 }

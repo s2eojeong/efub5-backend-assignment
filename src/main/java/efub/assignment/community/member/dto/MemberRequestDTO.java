@@ -3,7 +3,7 @@ package efub.assignment.community.member.dto;
 // 회원 가입 시 필요한 데이터 받는 DTO
 public class MemberRequestDTO {
     private String email;
-    private int studentNumber;
+    private String studentNumber;
     private String nickname;
     private String school;
     private String password;
@@ -11,7 +11,7 @@ public class MemberRequestDTO {
     //기본 생성자 (Spring이 JSON을 객체로 변환할 때 필요)
     public MemberRequestDTO() {}
 
-    public MemberRequestDTO(String email, int studentNumber, String nickname, String school, String password){
+    public MemberRequestDTO(String email, String studentNumber, String nickname, String school, String password){
         this.email = email;
         this.studentNumber = studentNumber;
         this.nickname = nickname;
@@ -24,7 +24,7 @@ public class MemberRequestDTO {
         return email;
     }
 
-    public int getStudentNumber(){
+    public String getStudentNumber(){
         return studentNumber;
     }
 

@@ -1,5 +1,6 @@
-package efub.assignment.community.member;
+package efub.assignment.community.member.service;
 
+import efub.assignment.community.member.repository.MemberRepository;
 import efub.assignment.community.member.dto.MemberRequestDTO;
 import efub.assignment.community.member.domain.Member;
 import efub.assignment.community.member.dto.MemberResponseDTO;
@@ -31,27 +32,15 @@ public class MemberService {
         );
         Member savedMember = memberRepository.save(newMember);
 
-        //MemberResponseDTO로 변환
-        return new MemberResponseDTO(
-                savedMember.getMemberId(),
-                savedMember.getStudentNumber(),
-                savedMember.getNickname(),
-                savedMember.getSchool(),
-                savedMember.getEmail()
-        );
+        return MemberResponseDTO.from(savedMember);
     }
 
     //회원 조회
+    @Transactional(readOnly = true)
     public MemberResponseDTO getMemberByMemberId(Long memberId){
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다."));
-        return new MemberResponseDTO(
-                member.getMemberId(),
-                member.getStudentNumber(),
-                member.getNickname(),
-                member.getSchool(),
-                member.getEmail()
-        );
+        return MemberResponseDTO.from(member);
     }
 
     // 닉네임 변경
@@ -73,13 +62,7 @@ public class MemberService {
         member.changeEmail(newEmail);
 
         //변경된 회원 정보 DTO로 변환 후 반환
-        return new MemberResponseDTO(
-                member.getMemberId(),
-                member.getStudentNumber(),
-                member.getNickname(),
-                member.getSchool(),
-                member.getEmail()
-        );
+        return MemberResponseDTO.from(member);
     }
 
     // 비밀번호 변경
@@ -97,7 +80,7 @@ public class MemberService {
     }
 
     // 중복 검사 로직
-    private void validateDuplicateMember(int studentNumber, String email){
+    private void validateDuplicateMember(String studentNumber, String email){
         if(memberRepository.existsByStudentNumber(studentNumber)){
             throw new IllegalArgumentException("이미 존재하는 학번 입니다.");
         }

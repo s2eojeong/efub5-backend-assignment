@@ -10,7 +10,7 @@ public class Member {
     private Long memberId;
 
     @Column(nullable = false, unique = true)
-    private int studentNumber;
+    private String studentNumber;
 
     private String nickname;
 
@@ -31,7 +31,7 @@ public class Member {
     protected Member() {}
 
     // private 생성자 (정적 팩토리 메서드에서만 사용 가능)
-    public Member(int studentNumber, String nickname, String school, String email, String password, MemberStatus memberStatus) {
+    public Member(String studentNumber, String nickname, String school, String email, String password, MemberStatus memberStatus) {
         this.studentNumber = studentNumber;
         this.nickname = nickname;
         this.school = school;
@@ -41,7 +41,7 @@ public class Member {
     }
 
     // 정적 팩토리 메서드 (가독성 향상) / default : ACTIVE
-    public static Member create(int studentNumber, String nickname, String school, String email, String password){
+    public static Member create(String studentNumber, String nickname, String school, String email, String password){
         return new Member(studentNumber, nickname, school, email, password, MemberStatus.ACTIVE);
     }
 
@@ -50,7 +50,7 @@ public class Member {
         return memberId;
     }
 
-    public int getStudentNumber() {
+    public String getStudentNumber() {
         return studentNumber;
     }
 

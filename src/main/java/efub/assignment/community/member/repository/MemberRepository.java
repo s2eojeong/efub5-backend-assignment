@@ -1,4 +1,4 @@
-package efub.assignment.community.member;
+package efub.assignment.community.member.repository;
 
 import efub.assignment.community.member.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,5 +8,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsByEmail(String email);
 
     // 학번 존재 여부
-    boolean existsByStudentNumber(int studentNumber);
+    boolean existsByStudentNumber(String studentNumber);
 }

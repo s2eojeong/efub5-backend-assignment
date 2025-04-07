@@ -48,3 +48,7 @@ logs/
 
 ### Test Reports ###
 /build/reports/
+
+### Configuration Files ###
+*.yml
+application.properties
