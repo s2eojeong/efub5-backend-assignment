@@ -1,5 +1,7 @@
 package com.efub_assignment.community.community.post.service;
 
+import com.efub_assignment.community.community.board.domain.Board;
+import com.efub_assignment.community.community.board.repository.BoardRepository;
 import com.efub_assignment.community.community.member.domain.Member;
 import com.efub_assignment.community.community.member.repository.MemberRepository;
 import com.efub_assignment.community.community.post.domain.Post;
@@ -22,13 +24,19 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
+    private final BoardRepository boardRepository;
 
     @Transactional
     public Long createPost(PostCreateRequest postCreateRequest){
         Long memberId =postCreateRequest.memberId();
+        Long boardId = postCreateRequest.boardId();
+
         Member writer = findByMemberId(memberId);
-        Post newPost = postCreateRequest.toEntity(writer);
+        Board board = findByBoardId(boardId);
+
+        Post newPost = postCreateRequest.toEntity(writer, board);
         postRepository.save(newPost);
+
         return newPost.getId();
     }
 
@@ -70,6 +78,11 @@ public class PostService {
     private Member findByMemberId(Long memberId){
         return memberRepository.findByMemberId(memberId)
                 .orElseThrow(()-> new NoSuchElementException("회원을 찾을 수 없습니다."));
+    }
+
+    private Board findByBoardId(Long boardId){
+        return boardRepository.findById(boardId)
+                .orElseThrow(()-> new NoSuchElementException("게시판이 존재하지 않습니다."));
     }
 
     private void authorizePostWriter(Post post, Member member, String password){

@@ -1,5 +1,6 @@
 package com.efub_assignment.community.community.post.domain;
 
+import com.efub_assignment.community.community.board.domain.Board;
 import com.efub_assignment.community.community.global.entity.BaseTimeEntity;
 import com.efub_assignment.community.community.member.domain.Member;
 import jakarta.persistence.*;
@@ -22,6 +23,11 @@ public class Post extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY) //성능 최적화
     private Member writer;
 
+    // 연결된 게시판
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "boardId") // 외래키 컬럼명
+    private Board board;
+
     // 제목
     private String title;
 
@@ -33,10 +39,11 @@ public class Post extends BaseTimeEntity {
 
     //빌더
     @Builder
-    public Post(String title, String content, Member writer){
+    public Post(String title, String content, Member writer, Board board){
         this.title= title;
         this.content=content;
         this.writer =writer;
+        this.board = board;
         this.viewCount = 0L;
     }
 
