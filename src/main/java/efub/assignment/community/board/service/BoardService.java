@@ -77,7 +77,4 @@ public class BoardService {
                         .orElseThrow(()-> new IllegalArgumentException("해당 게시판이 존재하지 않습니다."));
         boardRepository.deleteById(boardId);
     }
-
-    // 게시물 등록
-
 }
