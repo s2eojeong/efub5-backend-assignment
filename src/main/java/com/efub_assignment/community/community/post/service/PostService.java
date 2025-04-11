@@ -36,6 +36,7 @@ public class PostService {
 
         Post newPost = postCreateRequest.toEntity(writer, board);
         postRepository.save(newPost);
+        boardRepository.increasePostCount(board.getId());
 
         return newPost.getId();
     }

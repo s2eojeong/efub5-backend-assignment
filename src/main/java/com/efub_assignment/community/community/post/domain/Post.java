@@ -25,7 +25,7 @@ public class Post extends BaseTimeEntity {
 
     // 연결된 게시판
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "boardId") // 외래키 컬럼명
+    @JoinColumn(name = "boardId", nullable = false) // 외래키 컬럼명
     private Board board;
 
     // 제목

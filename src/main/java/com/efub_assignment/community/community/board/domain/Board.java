@@ -41,6 +41,9 @@ public class Board extends BaseTimeEntity {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true) // 게시판이 삭제되면 게시물도 삭제
     private List<Post> posts = new ArrayList<>();
 
+    //포스트 개수
+    private Long postCount;
+
     @Builder
     public Board(String boardName, String description, String notice, String password, Member owner){
         this.boardName = boardName;
@@ -48,6 +51,7 @@ public class Board extends BaseTimeEntity {
         this.notice = notice;
         this.password = password;
         this.owner = owner;
+        this.postCount = 0L;
 
     }
 
