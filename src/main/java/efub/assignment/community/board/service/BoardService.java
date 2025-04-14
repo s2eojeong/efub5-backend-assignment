@@ -27,8 +27,7 @@ public class BoardService {
     // 게시판 생성
     @Transactional
     public BoardResponseDTO createBoard(BoardRequestDTO requestDTO){
-        Member master = memberRepository.findById(requestDTO.getMasterId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        Member master = memberValidation(requestDTO.getMasterId());
 
         Board newBoard = Board.create(
                 requestDTO.getBoardName(),
@@ -62,8 +61,7 @@ public class BoardService {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시판이 없습니다. id=" + boardId));
         //2. 해당 회원 존재하는지 확인
-        Member newMaster = memberRepository.findById(requestDTO.getMasterId())
-                .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다."));
+        Member newMaster = memberValidation(requestDTO.getMasterId());
         //3. 관리자 변경
         board.setMaster(newMaster);
 
@@ -76,5 +74,12 @@ public class BoardService {
         Board deletedBoard = boardRepository.findById(boardId)
                         .orElseThrow(()-> new IllegalArgumentException("해당 게시판이 존재하지 않습니다."));
         boardRepository.deleteById(boardId);
+    }
+
+    // 회원 존재여부
+    public Member memberValidation(Long memberId){
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(()-> new IllegalArgumentException("해당 회원이 존재하지 않습니다.");
+        return member;
     }
 }

@@ -41,7 +41,7 @@ public class PostController {
 
     // 게시글 수정
     @PatchMapping("/{postId}")
-    public ResponseEntity<PostResponseDTO> editPost(@PathVariable Long boardId, @PathVariable Long postId, PostRequestDTO requestDTO){
+    public ResponseEntity<PostResponseDTO> editPost(@PathVariable Long boardId, @PathVariable Long postId, @RequestBody PostRequestDTO requestDTO){
         PostResponseDTO responseDTO = postService.editPost(boardId, postId, requestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
     }

@@ -56,8 +56,7 @@ public class PostService {
     @Transactional(readOnly = true)
     public PostListResponseDTO getPostList(Long boardId){
         //1. boardId 유효성 검사
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("게시판을 찾을 수 없습니다."));
+        Board board = boardValidation(boardId);
 
         //2. 해당 board의 postList 찾기
         List<Post> posts = postRepository.findAllByBoard(board);
@@ -78,8 +77,7 @@ public class PostService {
     @Transactional
     public PostResponseDTO editPost(Long boardId, Long postId, PostRequestDTO requestDTO){
         //1. board 유효성 검사
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("게시판을 찾을 수 없습니다."));
+        Board board = boardValidation(boardId);
 
         //2. post 유효성 검사
         Post post = postRepository.findById(postId)
@@ -102,5 +100,11 @@ public class PostService {
 
         //2. 게시물 삭제
         postRepository.deleteById(postId);
+    }
+
+    //boardId 유효성 검사
+    public Board boardValidation(Long boardId){
+        Board board = boardRepository.findById(boardId).orElseThrow(()->new IllegalArgumentException("게시판을 찾을 수 없습니다."));
+        return board;
     }
 }

@@ -21,7 +21,7 @@ public class BoardController {
     }
 
     // 게시판 생성
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<BoardResponseDTO> registerBoard(@RequestBody BoardRequestDTO requestDTO){
         BoardResponseDTO responseDTO = boardService.createBoard(requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);

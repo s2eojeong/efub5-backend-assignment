@@ -1,5 +1,6 @@
 package efub.assignment.community.post.domain;
 
+import efub.assignment.community.global.domain.BaseEntity;
 import efub.assignment.community.member.domain.Member;
 import efub.assignment.community.board.domain.Board;
 import jakarta.persistence.*;
@@ -9,7 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.time.LocalDateTime;
 
 @Entity
-public class Post {
+public class Post extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
 
@@ -26,12 +27,6 @@ public class Post {
 
     @Column
     private String content;
-
-    @CreatedDate @Column(updatable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate @Column
-    private LocalDateTime updatedAt;
 
     protected Post() {}
     private Post(Board board, Member writer, boolean anonymity, String content){

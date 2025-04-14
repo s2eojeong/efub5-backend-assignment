@@ -31,10 +31,14 @@ public class PostResponseDTO {
         return content;
     }
 
+    //정적 팩토리 메서드
     public static PostResponseDTO from (Post post){
-      return new PostResponseDTO(
+        // Anonymity가 'true'일 경우 'writerId = null'
+        Long writerId = post.isAnonymity() ? null : post.getWriter().getMemberId();
+
+        return new PostResponseDTO(
               post.getPostId(),
-              post.getWriter().getMemberId(),
+              writerId,
               post.isAnonymity(),
               post.getContent()
       );

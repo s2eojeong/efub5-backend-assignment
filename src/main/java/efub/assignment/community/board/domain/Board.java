@@ -1,5 +1,6 @@
 package efub.assignment.community.board.domain;
 
+import efub.assignment.community.global.domain.BaseEntity;
 import efub.assignment.community.member.domain.Member;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -8,7 +9,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.time.LocalDateTime;
 
 @Entity
-public class Board {
+public class Board extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,14 +27,6 @@ public class Board {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="member_id", nullable = false)
     private Member master;      //FK
-
-    //생성일, 수정일 필요
-    @CreatedDate @Column(updatable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
-
 
     // 기본 생성자 (JPA가 필요로 함)
     protected Board() {

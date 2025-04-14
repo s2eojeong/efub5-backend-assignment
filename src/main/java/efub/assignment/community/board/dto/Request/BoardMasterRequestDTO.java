@@ -6,8 +6,4 @@ public class BoardMasterRequestDTO {
     public Long getMasterId() {
         return masterId;
     }
-
-    public void setMasterId(Long masterId){
-        this.masterId = masterId;
-    }
 }
