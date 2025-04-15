@@ -1,8 +1,9 @@
 package efub.assignment.community.member.controller;
 
-import efub.assignment.community.member.dto.*;
-import efub.assignment.community.member.dto.CreateMemberResponseDto;
-import efub.assignment.community.member.dto.NicknameUpdateResponseDto;
+import efub.assignment.community.member.dto.request.CreateMemberRequestDto;
+import efub.assignment.community.member.dto.request.NicknameUpdateRequestDto;
+import efub.assignment.community.member.dto.response.CreateMemberResponseDto;
+import efub.assignment.community.member.dto.response.MemberResponseDto;
 import efub.assignment.community.member.service.MembersService;
 
 import jakarta.validation.Valid;
@@ -34,8 +35,8 @@ public class MemberController {
 
     // 회원 정보 수정: PATCH/members/profile/{memberId}
     @PatchMapping("/profile/{memberId}")
-    public ResponseEntity<NicknameUpdateResponseDto> updateMember(@PathVariable("memberId")Long memberId, @RequestBody @Valid NicknameUpdateRequestDto requestDto) {
-        NicknameUpdateResponseDto responseDto = membersService.updateMember(memberId, requestDto);
+    public ResponseEntity<MemberResponseDto> updateMember(@PathVariable("memberId")Long memberId, @RequestBody @Valid NicknameUpdateRequestDto requestDto) {
+        MemberResponseDto responseDto = membersService.updateMember(memberId, requestDto);
         return ResponseEntity.ok(responseDto);
     }
 

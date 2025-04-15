@@ -1,6 +1,7 @@
 package efub.assignment.community.member.repository;
 
 import efub.assignment.community.member.entity.Member;
+import efub.assignment.community.post.domain.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -12,4 +13,5 @@ public interface MembersRepository extends JpaRepository<Member,Long>{
 
     // Member Id로 조회
     Optional<Member> findByMemberId(Long MemberId);
+
 }

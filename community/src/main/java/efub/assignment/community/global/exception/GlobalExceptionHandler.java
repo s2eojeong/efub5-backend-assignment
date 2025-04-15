@@ -1,7 +1,6 @@
 package efub.assignment.community.global.exception;
 
-import efub.assignment.community.member.dto.ErrorResponseDto;
-
+import efub.assignment.community.global.exception.dto.ErrorResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
