@@ -71,7 +71,8 @@ public class PostService {
         postRepository.delete(post);
     }
 
-    private Post findByPostId(Long postId){
+    @Transactional
+    public Post findByPostId(Long postId){
         return postRepository.findById(postId)
                 .orElseThrow(()-> new NoSuchElementException("게시글을 찾을 수 없습니다."));
     }

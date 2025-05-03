@@ -1,7 +1,7 @@
 package com.efub_assignment.community.community.member.controller;
 
-import com.efub_assignment.community.community.member.dto.MemberRequestDto;
-import com.efub_assignment.community.community.member.dto.MemberResponseDto;
+import com.efub_assignment.community.community.member.dto.request.MemberRequestDto;
+import com.efub_assignment.community.community.member.dto.response.MemberResponseDto;
 import com.efub_assignment.community.community.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -1,11 +1,15 @@
 package com.efub_assignment.community.community.member.domain;
 
+import com.efub_assignment.community.community.comment.domain.Comment;
 import com.efub_assignment.community.community.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Builder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -41,6 +45,10 @@ public class Member extends BaseTimeEntity {
     //멤버 상태
     @Enumerated(EnumType.STRING)
     private MemberStatus status = MemberStatus.RESISTER;
+
+    //멤버별 댓글 리스크
+    @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> commnetList = new ArrayList<>();
 
     @Builder
     public Member(String email, String studentId, String school, String nickname, String password){

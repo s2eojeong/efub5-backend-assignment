@@ -2,8 +2,8 @@ package com.efub_assignment.community.community.member.service;
 
 import com.efub_assignment.community.community.member.domain.Member;
 import com.efub_assignment.community.community.member.domain.MemberStatus;
-import com.efub_assignment.community.community.member.dto.MemberRequestDto;
-import com.efub_assignment.community.community.member.dto.MemberResponseDto;
+import com.efub_assignment.community.community.member.dto.request.MemberRequestDto;
+import com.efub_assignment.community.community.member.dto.response.MemberResponseDto;
 import com.efub_assignment.community.community.member.repository.MemberRepository;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -50,9 +50,20 @@ public class MemberService {
 
     // 멤버 논리적 삭제
     public void deleteMember(Long memberId){
-        Member member = memberRepository.findByMemberId(memberId)
-                .orElseThrow(()-> new IllegalArgumentException("해당 계정을 찾을 수 없습니다."));
+        Member member = findByMemberId(memberId);
         member.changeStatus(MemberStatus.UNRESISTER);
-        memberRepository.save(member);
+    }
+
+    //멤버 물리적 삭제
+    @Transactional
+    public void physicalDeleteMember(Long memberId){
+        Member member = findByMemberId(memberId);
+        memberRepository.delete(member);
+    }
+
+    @Transactional
+    public Member findByMemberId(Long memberId){
+        return memberRepository.findByMemberId(memberId)
+                .orElseThrow(()->new IllegalArgumentException("해당 계정을 찾을 수 없습니다."));
     }
 }
