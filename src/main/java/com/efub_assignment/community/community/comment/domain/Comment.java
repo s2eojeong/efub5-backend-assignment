@@ -23,7 +23,7 @@ public class Comment extends BaseTimeEntity {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", updatable = false)
+    @JoinColumn(name = "member_id", updatable = false)
     private Member writer;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -37,6 +37,8 @@ public class Comment extends BaseTimeEntity {
         this.post=post;
     }
 
-
+    public void updateComment(String content){
+        this.content=content;
+    }
 
 }

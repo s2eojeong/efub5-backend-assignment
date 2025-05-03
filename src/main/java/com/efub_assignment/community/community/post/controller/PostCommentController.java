@@ -1,6 +1,7 @@
 package com.efub_assignment.community.community.post.controller;
 
 import com.efub_assignment.community.community.comment.dto.request.CommentRequest;
+import com.efub_assignment.community.community.comment.dto.request.CommentUpdateRequest;
 import com.efub_assignment.community.community.comment.service.CommentService;
 import com.efub_assignment.community.community.post.dto.response.PostCommentResponse;
 import lombok.RequiredArgsConstructor;
@@ -26,4 +27,13 @@ public class PostCommentController {
     public ResponseEntity<PostCommentResponse> getComment(@PathVariable("postId") Long postId){
         return ResponseEntity.ok(commentService.getPostCommentList(postId));
     }
+
+    //댓글 수정
+    @PatchMapping("/{commentId}")
+    public ResponseEntity<String> updateComment(@PathVariable("commentId") Long commentId,
+                                                @RequestBody CommentUpdateRequest request){
+        commentService.updateComment(commentId,request);
+        return ResponseEntity.ok("댓글이 수정되었습니다.");
+    }
+
 }

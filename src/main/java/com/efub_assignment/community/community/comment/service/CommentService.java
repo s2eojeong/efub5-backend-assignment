@@ -3,6 +3,7 @@ package com.efub_assignment.community.community.comment.service;
 
 import com.efub_assignment.community.community.comment.domain.Comment;
 import com.efub_assignment.community.community.comment.dto.request.CommentRequest;
+import com.efub_assignment.community.community.comment.dto.request.CommentUpdateRequest;
 import com.efub_assignment.community.community.comment.repository.CommentRepository;
 import com.efub_assignment.community.community.member.dto.response.MemberCommentResponse;
 import com.efub_assignment.community.community.member.service.MemberService;
@@ -45,5 +46,18 @@ public class CommentService {
         Member member = memberService.findByMemberId(memberId);
         List<Comment> commentList =commentRepository.findAllByWriterMemberIdOrderByCreatedAtDesc(memberId);
         return MemberCommentResponse.of(member, commentList);
+    }
+    //댓글 수정
+    @Transactional
+    public void updateComment(Long commentId, CommentUpdateRequest request){
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(()-> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
+
+        // 작성자 검증
+        if (!comment.getWriter().getMemberId().equals(request.getMemberId())) {
+            throw new IllegalArgumentException("댓글 작성자만 수정할 수 있습니다.");
+        }
+
+        comment.updateComment(request.getContent());
     }
 }
