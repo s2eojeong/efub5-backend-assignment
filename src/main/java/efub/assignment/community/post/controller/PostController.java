@@ -52,4 +52,5 @@ public class PostController {
         postService.deletePost(boardId, postId);
         return ResponseEntity.status(HttpStatus.OK).body("게시물이 삭제되었습니다.");
     }
+
 }

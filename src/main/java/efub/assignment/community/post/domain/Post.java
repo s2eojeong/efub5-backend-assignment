@@ -1,13 +1,13 @@
 package efub.assignment.community.post.domain;
 
+import efub.assignment.community.comment.domain.Comment;
 import efub.assignment.community.global.domain.BaseEntity;
 import efub.assignment.community.member.domain.Member;
 import efub.assignment.community.board.domain.Board;
 import jakarta.persistence.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Post extends BaseEntity {
@@ -27,6 +27,9 @@ public class Post extends BaseEntity {
 
     @Column
     private String content;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Comment> commentList = new ArrayList<>();
 
     protected Post() {}
     private Post(Board board, Member writer, boolean anonymity, String content){
