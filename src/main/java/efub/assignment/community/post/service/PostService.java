@@ -30,8 +30,7 @@ public class PostService {
     @Transactional
     public PostResponseDTO createPost(Long boardId, PostRequestDTO requestDTO){
         //1. 게시판 유효성 검사
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException("게시판을 찾을 수 없습니다."));
+        Board board = boardValidation(boardId);
 
         //2. 작성자 찾기
         Member writer = memberRepository.findById(requestDTO.getMemberId())
@@ -80,8 +79,7 @@ public class PostService {
         Board board = boardValidation(boardId);
 
         //2. post 유효성 검사
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+        Post post = postValidation(postId);
 
         //3. 게시물 수정
         post.setAnonymity(requestDTO.isAnonymity());
@@ -95,16 +93,22 @@ public class PostService {
     @Transactional
     public void deletePost(Long boardId, Long postId){
         //1. post 유효성 검사
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다."));
+        Post post = postValidation(postId);
 
         //2. 게시물 삭제
         postRepository.deleteById(postId);
     }
 
+    // - 유효성 검사 -
     //boardId 유효성 검사
     public Board boardValidation(Long boardId){
         Board board = boardRepository.findById(boardId).orElseThrow(()->new IllegalArgumentException("게시판을 찾을 수 없습니다."));
         return board;
+    }
+
+    //postId 유효성 검사
+    public Post postValidation(Long postId){
+        Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("게시물을 찾을 수 없습니다."));
+        return post;
     }
 }

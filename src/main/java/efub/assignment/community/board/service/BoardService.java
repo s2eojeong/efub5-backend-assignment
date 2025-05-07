@@ -79,7 +79,7 @@ public class BoardService {
     // 회원 존재여부
     public Member memberValidation(Long memberId){
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(()-> new IllegalArgumentException("해당 회원이 존재하지 않습니다.");
+                .orElseThrow(()-> new IllegalArgumentException("해당 회원이 존재하지 않습니다."));
         return member;
     }
 }
