@@ -1,5 +1,6 @@
 package efub.assignment.community.post.domain;
 
+import efub.assignment.community.comment.domain.Comment;
 import efub.assignment.community.global.domain.BaseEntity;
 import efub.assignment.community.member.entity.Member;
 import jakarta.persistence.*;
@@ -7,6 +8,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -18,9 +22,11 @@ public class Post extends BaseEntity {
     private Long id;
 
     // 제목
+    @Column(nullable = false)
     private String title;
 
     // 내용
+    @Column(nullable = false)
     private  String content;
 
     // 글쓴이
@@ -29,6 +35,9 @@ public class Post extends BaseEntity {
 
     // 조회수
     private Long viewCount;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> commentList = new ArrayList<>();
 
     // 빌더
     @Builder

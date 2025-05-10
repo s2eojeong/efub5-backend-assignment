@@ -1,5 +1,7 @@
 package efub.assignment.community.member.service;
 
+import efub.assignment.community.global.exception.BlogException;
+import efub.assignment.community.global.exception.ExceptionCode;
 import efub.assignment.community.member.dto.request.CreateMemberRequestDto;
 import efub.assignment.community.member.dto.request.NicknameUpdateRequestDto;
 import efub.assignment.community.member.dto.response.CreateMemberResponseDto;
@@ -7,7 +9,7 @@ import efub.assignment.community.member.dto.response.MemberResponseDto;
 import efub.assignment.community.member.entity.Member;
 import efub.assignment.community.member.entity.MemberStatus;
 import efub.assignment.community.member.repository.MembersRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -49,6 +51,12 @@ public class MembersService {
         Member member = membersRepository.findByMemberId(memberId).orElseThrow(()->new IllegalArgumentException("해당 회원을 찾을 수 없습니다."));
         member.changeStatus(MemberStatus.UNREGISTER);
         membersRepository.save(member);
+    }
+
+    @Transactional(readOnly=true)
+    public Member findByMemberId(Long memberId){
+        return membersRepository.findByMemberId(memberId)
+                .orElseThrow(()-> new BlogException(ExceptionCode.MEMBER_NOT_FOUND));
     }
 
 }
