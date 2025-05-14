@@ -16,4 +16,8 @@ public enum ClientExceptionCode {
     // Board
     BOARD_NOT_FOUND,
     BOARD_OWNER_MISMATCH,
+
+    // Comment
+    COMMENT_NOT_FOUND,
+    COMMENT_ACCOUNT_MISMATCH,
 }

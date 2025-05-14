@@ -61,11 +61,13 @@ public class PostService {
         postRepository.delete(post);
     }
 
-    private Post findByPostId(Long postId) {
+    @Transactional(readOnly=true)
+    public Post findByPostId(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(()-> new BlogException(ExceptionCode.POST_NOT_FOUND));
     }
 
+    @Transactional(readOnly=true)
     private Member findByMemberId(Long accountId) {
         return MembersRepository.findByMemberId(accountId)
                 .orElseThrow(() -> new BlogException(ExceptionCode.MEMBER_NOT_FOUND));

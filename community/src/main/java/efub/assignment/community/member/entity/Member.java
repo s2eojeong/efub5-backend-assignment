@@ -1,11 +1,14 @@
 package efub.assignment.community.member.entity;
 
-import efub.assignment.community.member.entity.MemberStatus;
+import efub.assignment.community.comment.domain.Comment;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -40,6 +43,9 @@ public class Member {
     @Enumerated
     @Column
     private MemberStatus status = MemberStatus.ACTIVE;
+
+    @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> commentList = new ArrayList<>();
 
     @Builder
     public Member(String email, String password, String nickname, String university, String studentId) {

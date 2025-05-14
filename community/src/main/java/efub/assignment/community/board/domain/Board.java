@@ -20,6 +20,7 @@ public class Board extends BaseEntity{
     private Long id;
 
     // 제목
+    @Column(nullable = false)
     private String title;
 
     // 설명
@@ -30,6 +31,7 @@ public class Board extends BaseEntity{
 
     // owner
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
     private Member owner;
 
 
