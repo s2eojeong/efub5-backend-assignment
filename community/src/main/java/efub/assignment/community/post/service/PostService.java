@@ -5,11 +5,13 @@ import efub.assignment.community.global.exception.ExceptionCode;
 import efub.assignment.community.member.entity.Member;
 import efub.assignment.community.member.repository.MembersRepository;
 import efub.assignment.community.post.domain.Post;
+import efub.assignment.community.post.domain.PostLike;
 import efub.assignment.community.post.dto.request.PostCreateRequest;
 import efub.assignment.community.post.dto.request.PostUpdateRequest;
 import efub.assignment.community.post.dto.response.PostListResponse;
 import efub.assignment.community.post.dto.response.PostResponse;
 import efub.assignment.community.post.dto.summary.PostSummary;
+import efub.assignment.community.post.repository.PostLikeRepository;
 import efub.assignment.community.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final MembersRepository MembersRepository;
+    private final PostLikeRepository postLikeRepository;
 
     @Transactional
     public Long createPost(PostCreateRequest postCreateRequest) {
@@ -80,5 +83,29 @@ public class PostService {
         }
     }
 
+    // 게시글 좋아요
+    public void likePost(Long postId, Long memberId) {
+        Post post = findByPostId(postId);
+        Member member = findByMemberId(memberId);
+
+        //좋아요가 존재하는지 여부 확인
+        if (postLikeRepository.existsByPostAndMember(post, member)){
+            throw new BlogException(ExceptionCode.LIKE_ALREADY_EXISTS);
+        }
+        PostLike like = PostLike.builder()
+                .post(post)
+                .member(member)
+                .build();
+        postLikeRepository.save(like);
+    }
+
+    // 게시글 좋아요 취소
+    public void unlikePost(Long postId, Long memberId) {
+        Post post = findByPostId(postId);
+        Member member = findByMemberId(memberId);
+        PostLike like = postLikeRepository.findByPostAndMember(post, member)
+                .orElseThrow(()->new BlogException(ExceptionCode.LIKE_NOT_FOUND));
+        postLikeRepository.delete(like);
+    }
 }
 
