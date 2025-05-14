@@ -8,6 +8,7 @@ import com.efub_assignment.community.community.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.connector.Response;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,13 +35,13 @@ public class PostController {
     }
 
     //게시물 내용 조회
-    @GetMapping("/{id}")
+    @GetMapping("/{postId}")
     public ResponseEntity<PostResponse> getPost(@PathVariable("id") Long postId){
         return ResponseEntity.ok(postService.getPost(postId));
     }
 
     //게시물 내용 수정
-    @PatchMapping("/{id}")
+    @PatchMapping("/{postId}")
     public ResponseEntity<Void> updatePostContent(@PathVariable("id") Long postId,
                                                   @RequestHeader("Auth-Id") Long memberId,
                                                   @RequestHeader("Auth-password") String password,
@@ -50,7 +51,7 @@ public class PostController {
     }
 
     // 게시물 삭제
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(@PathVariable("id") Long postId,
                                            @RequestHeader("Auth-Id") Long memberId,
                                            @RequestHeader("Auth-password") String password){
@@ -58,4 +59,19 @@ public class PostController {
         return ResponseEntity.noContent().build();
     }
 
+    //게시글 좋아요
+    @PostMapping("/{postId}/like")
+    public ResponseEntity<String> likePost(@PathVariable("postId") Long postId,
+                                           @RequestHeader("Auth-Id") Long memberId){
+        postService.likePost(postId, memberId);
+        return ResponseEntity.status(HttpStatus.CREATED).body("좋아요를 눌렀습니다.");
+    }
+
+    //게시글 좋아요 취소
+    @DeleteMapping("/{postId}/like")
+    public ResponseEntity<String> unlikePost(@PathVariable("postId") Long postId,
+                                             @RequestHeader("Auth-Id") Long memberId) {
+        postService.unlikePost(postId, memberId);
+        return ResponseEntity.ok("좋아요가 취소되었습니다.");
+    }
 }

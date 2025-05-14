@@ -5,11 +5,13 @@ import com.efub_assignment.community.community.board.repository.BoardRepository;
 import com.efub_assignment.community.community.member.domain.Member;
 import com.efub_assignment.community.community.member.repository.MemberRepository;
 import com.efub_assignment.community.community.post.domain.Post;
+import com.efub_assignment.community.community.post.domain.PostLike;
 import com.efub_assignment.community.community.post.dto.request.PostCreateRequest;
 import com.efub_assignment.community.community.post.dto.request.PostUpdateRequest;
 import com.efub_assignment.community.community.post.dto.response.PostListResponse;
 import com.efub_assignment.community.community.post.dto.response.PostResponse;
 import com.efub_assignment.community.community.post.dto.summary.PostSummary;
+import com.efub_assignment.community.community.post.repository.PostLikeRepository;
 import com.efub_assignment.community.community.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
+    private final PostLikeRepository postLikeRepository;
 
     @Transactional
     public Long createPost(PostCreateRequest postCreateRequest){
@@ -71,6 +74,31 @@ public class PostService {
         postRepository.delete(post);
     }
 
+    //게시글 좋아요 등록
+    @Transactional
+    public void likePost(Long postId, Long memberId){
+        Post post = findByPostId(postId);
+        Member member = findByMemberId(memberId);
+        //좋아요가 이미 존재하는지 여부 확인
+        if(postLikeRepository.existsByPostAndMember(post,member)){
+            throw new IllegalArgumentException("좋아요가 이미 있습니다.");
+        }
+        PostLike like = PostLike.builder()
+                .post(post)
+                .member(member)
+                .build();
+        postLikeRepository.save(like);
+    }
+
+    //게시글 좋아요 취소
+    @Transactional
+    public void unlikePost(Long postId, Long memberId){
+        Post post = findByPostId(postId);
+        Member member = findByMemberId(memberId);
+        PostLike like = postLikeRepository.findByPostAndMember(post, member)
+                .orElseThrow(()-> new IllegalArgumentException("좋아요가 발견되지 않습니다."));
+        postLikeRepository.delete(like);
+    }
     @Transactional
     public Post findByPostId(Long postId){
         return postRepository.findById(postId)
