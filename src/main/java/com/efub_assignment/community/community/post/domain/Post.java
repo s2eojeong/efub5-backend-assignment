@@ -1,6 +1,7 @@
 package com.efub_assignment.community.community.post.domain;
 
 import com.efub_assignment.community.community.board.domain.Board;
+import com.efub_assignment.community.community.comment.domain.Comment;
 import com.efub_assignment.community.community.global.entity.BaseTimeEntity;
 import com.efub_assignment.community.community.member.domain.Member;
 import jakarta.persistence.*;
@@ -8,6 +9,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -36,6 +40,10 @@ public class Post extends BaseTimeEntity {
 
     //조회수
     private Long viewCount;
+
+    //댓글 리스트
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> commentList= new ArrayList<>();
 
     //빌더
     @Builder

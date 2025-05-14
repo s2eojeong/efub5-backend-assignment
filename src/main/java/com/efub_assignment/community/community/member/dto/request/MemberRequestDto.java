@@ -1,4 +1,4 @@
-package com.efub_assignment.community.community.member.dto;
+package com.efub_assignment.community.community.member.dto.request;
 
 import com.efub_assignment.community.community.member.domain.Member;
 import jakarta.validation.constraints.NotBlank;
