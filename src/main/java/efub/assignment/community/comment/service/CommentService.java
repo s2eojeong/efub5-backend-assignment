@@ -70,7 +70,7 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentResponseDTO updateComment(Long postId, Long commentId, CommentRequestDTO requestDTO) {
+    public CommentResponseDTO updateComment(Long commentId, CommentRequestDTO requestDTO) {
         //1. commentId 유효성 검사
         Comment comment = commentValidation(commentId);
         //2. comment 수정

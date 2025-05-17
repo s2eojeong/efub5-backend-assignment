@@ -5,9 +5,11 @@ import efub.assignment.community.board.domain.Board;
 import efub.assignment.community.board.repository.BoardRepository;
 import efub.assignment.community.member.repository.MemberRepository;
 import efub.assignment.community.post.domain.Post;
+import efub.assignment.community.post.domain.PostLike;
 import efub.assignment.community.post.dto.request.PostRequestDTO;
 import efub.assignment.community.post.dto.response.PostListResponseDTO;
 import efub.assignment.community.post.dto.response.PostResponseDTO;
+import efub.assignment.community.post.repository.PostLikeRepository;
 import efub.assignment.community.post.repository.PostRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,11 +21,13 @@ public class PostService {
     private final PostRepository postRepository;
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
+    private final PostLikeRepository postLikeRepository;
 
-    public PostService(PostRepository postRepository, BoardRepository boardRepository, MemberRepository memberRepository) {
+    public PostService(PostRepository postRepository, BoardRepository boardRepository, MemberRepository memberRepository, PostLikeRepository postLikeRepository) {
         this.postRepository = postRepository;
         this.boardRepository = boardRepository;
         this.memberRepository = memberRepository;
+        this.postLikeRepository = postLikeRepository;
     }
 
     //게시글 생성
@@ -95,8 +99,44 @@ public class PostService {
         //1. post 유효성 검사
         Post post = postValidation(postId);
 
-        //2. 게시물 삭제
+        //2. 게시글의 좋아요 삭제
+        postLikeRepository.deleteAllByPost(post);
+
+        //3. 게시물 삭제
         postRepository.deleteById(postId);
+    }
+
+    //게시글 좋아요 등록
+    @Transactional
+    public void likePost(Long postId, Long memberId) {
+        Post post = postValidation(postId);
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
+        //좋아요 여부 확인
+        if(postLikeRepository.existsByPostAndMember(post, member)) {
+            throw new IllegalArgumentException("이미 좋아요가 존재합니다.");
+        }
+        PostLike like = PostLike.builder()
+                .post(post)
+                .member(member)
+                .build();
+        postLikeRepository.save(like);
+    }
+
+    //게시글 좋아요 취소
+    @Transactional
+    public void unlikePost(Long postId, Long memberId) {
+        Post post = postValidation(postId);
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
+        //좋아요 존재 여부 확인
+        if (!postLikeRepository.existsByPostAndMember(post, member)) {
+            throw new IllegalArgumentException("해당 좋아요는 존재하지 않습니다.");
+        }
+
+        PostLike like = postLikeRepository.findByPostAndMember(post, member)
+                .orElseThrow(() -> new IllegalArgumentException("해당 좋아요을 찾을 수 없습니다."));
+        postLikeRepository.delete(like);
     }
 
     // - 유효성 검사 -

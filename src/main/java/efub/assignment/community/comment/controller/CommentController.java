@@ -23,7 +23,7 @@ public class CommentController {
         return (created != null)?
                 ResponseEntity.status(HttpStatus.CREATED).body(created) :
                 ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-
+        //null로 성공/실패를 구분하는 방식은 안전성이 떨어진다고 한다. -> 서비스단에서 명시적인 예외를 던지고, Controller에서는 예외처리하지 않거나 @ControllerAdvice에서 전역처리하는 것이 좋음
     }
 
     //게시글에 해당하는 댓글 목록 조회
@@ -31,6 +31,7 @@ public class CommentController {
     public ResponseEntity<CommentListResponseDTO> getCommentList(@PathVariable Long postId) {
         CommentListResponseDTO commentList = commentService.getCommentList(postId);
         //해당 게시글에 댓글이 없는 경우도 null임..(not ERROR)
+        //피드백 : REST에서는 빈 리스트([]) 반환이 표준임. 따라서 서비스단에서 List<>가 비어있을 경우에도 Collections.emptyList() 반환하기
         return ResponseEntity.status(HttpStatus.OK).body(commentList);
     }
 
@@ -44,7 +45,7 @@ public class CommentController {
     //댓글 수정
     @PatchMapping("/posts/{postId}/comments/{commentId}")
     public ResponseEntity<CommentResponseDTO> updateComment(@PathVariable Long postId, @PathVariable Long commentId, @RequestBody CommentRequestDTO requestDTO) {
-        CommentResponseDTO updatedComment = commentService.updateComment(postId, commentId, requestDTO);
+        CommentResponseDTO updatedComment = commentService.updateComment(postId, requestDTO);
         return (updatedComment != null)?
                 ResponseEntity.status(HttpStatus.OK).body(updatedComment) :
                 ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

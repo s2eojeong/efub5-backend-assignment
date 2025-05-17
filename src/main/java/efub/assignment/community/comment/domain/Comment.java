@@ -8,9 +8,10 @@ import jakarta.persistence.*;
 @Entity
 public class Comment extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
     private Long commentId;
 
-    @ManyToOne @JoinColumn(name = "post_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)  @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
     @Column(nullable = false)
@@ -19,7 +20,7 @@ public class Comment extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "member_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)  @JoinColumn(name = "member_id", nullable = false)
     private Member commentor;
 
     protected Comment() {};
