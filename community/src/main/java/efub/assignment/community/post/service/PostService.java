@@ -1,17 +1,21 @@
 package efub.assignment.community.post.service;
 
 import efub.assignment.community.board.service.BoardService;
+import efub.assignment.community.comment.domain.Comment;
+import efub.assignment.community.comment.domain.CommentLike;
 import efub.assignment.community.global.exception.dto.CommunityException;
 import efub.assignment.community.global.exception.dto.ExceptionCode;
 import efub.assignment.community.member.domain.Member;
 import efub.assignment.community.member.repository.MembersRepository;
-import efub.assignment.community.member.service.MembersService;
+import efub.assignment.community.member.service.MemberService;
 import efub.assignment.community.post.domain.Post;
+import efub.assignment.community.post.domain.PostLike;
 import efub.assignment.community.post.dto.request.PostCreateRequest;
 import efub.assignment.community.post.dto.request.PostUpdateRequest;
 import efub.assignment.community.post.dto.response.PostListResponse;
 import efub.assignment.community.post.dto.response.PostResponse;
 import efub.assignment.community.post.dto.summary.PostSummary;
+import efub.assignment.community.post.repository.PostLikeRepository;
 import efub.assignment.community.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,42 +23,30 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.naming.CommunicationException;
 import java.util.List;
-import java.util.Optional;
 
 @Service
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class PostService {
 
     private BoardService boardService;
 
     private final PostRepository postRepository;
     private final MembersRepository membersRepository;
-    private final MembersService membersService;
+    private final MemberService memberService;
+    private final PostLikeRepository postLikeRepository;
 
-    @Autowired
-    public void setBoardService(@Lazy BoardService boardService) {
-        this.boardService = boardService;
-    }
-
-    public PostService(PostRepository postRepository,
-                       MembersRepository membersRepository,
-                       MembersService membersService) {
-        this.postRepository = postRepository;
-        this.membersRepository = membersRepository;
-        this.membersService = membersService;
-    }
-
+    // 게시글 생성
     @Transactional
     public Long createPost(PostCreateRequest postCreateRequest){
         Long memberId=postCreateRequest.memberId();
-        Member writer = membersService.findByMemberId(memberId);
+        Member writer = memberService.findByMemberId(memberId);
         Post newPost=postCreateRequest.toEntity(writer);
         postRepository.save(newPost);
         return newPost.getId();
     }
 
+    // 게시글 조회
     @Transactional(readOnly = true)
     public PostResponse getPost(Long postId) {
         postRepository.increaseViewCount(postId);
@@ -69,6 +61,7 @@ public class PostService {
         return new PostListResponse(postSummaries, postRepository.count());
     }
 
+    // 게시글 수정
     @Transactional
     public void updatePostContent(Long postId, PostUpdateRequest request, Long memberId, String password) {
         Post post=findByPostId(postId);
@@ -77,6 +70,7 @@ public class PostService {
         post.changeContent(request.content());
     }
 
+    //게시글 삭제
     @Transactional
     public void deletePost(Long postId, Long memberId, String password) {
         Post post=findByPostId(postId);
@@ -104,4 +98,29 @@ public class PostService {
         }
     }
 
+    // 댓글 좋아요 등록
+    @Transactional
+    public void likePost(Long postId, Long memberId) {
+        Post post=findByPostId(postId);
+        Member member=memberService.findByMemberId(memberId);
+        if(postLikeRepository.existsByPostAndMember(post, member)){
+            throw new CommunityException(ExceptionCode.LIKE_ALREADY_EXISTS);
+        }
+        PostLike like=PostLike.builder()
+                .post(post)
+                .member(member)
+                .build();
+        postLikeRepository.save(like);
+    }
+
+    // 게시글 좋아요 삭제
+    @Transactional
+    public void unlikePost(Long postId, Long memberId) {
+        Post post=findByPostId(postId);
+        Member member=memberService.findByMemberId(memberId);
+        PostLike like=postLikeRepository.findByPostAndMember(post, member)
+                .orElseThrow(()->new CommunityException(ExceptionCode.LIKE_NOT_FOUND));
+        postLikeRepository.delete(like);
+    }
+    
 }
