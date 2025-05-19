@@ -19,14 +19,15 @@ public class PostController {
     }
 
     // 게시글 생성
-    @PostMapping("/")
+    //@PostMapping("/")     -- RESTful API에서는 URL 끝에 슬래시(/) 붙이지 않는 것이 관례임
+    @PostMapping
     public ResponseEntity<PostResponseDTO> createPost(@PathVariable Long boardId, @RequestBody PostRequestDTO requestDTO){
         PostResponseDTO responseDTO = postService.createPost(boardId, requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
     // 게시글 목록 조회
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<PostListResponseDTO> getPostList(@PathVariable Long boardId) {
         PostListResponseDTO responseDTO = postService.getPostList(boardId);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);

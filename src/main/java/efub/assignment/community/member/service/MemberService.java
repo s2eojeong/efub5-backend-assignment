@@ -90,7 +90,7 @@ public class MemberService {
     }
 
     // Member 엔티티를 찾는 함수(서비스 내부에서 사용)
-    private Member findMemberByMemberId(Long memberId){
+    public Member findMemberByMemberId(Long memberId){
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다."));
     }

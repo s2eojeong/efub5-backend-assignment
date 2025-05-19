@@ -2,6 +2,7 @@ package efub.assignment.community.comment.controller;
 
 import efub.assignment.community.comment.domain.Comment;
 import efub.assignment.community.comment.dto.request.CommentRequestDTO;
+import efub.assignment.community.comment.dto.request.CommentUpdateRequestDTO;
 import efub.assignment.community.comment.dto.response.CommentListResponseDTO;
 import efub.assignment.community.comment.dto.response.CommentResponseDTO;
 import efub.assignment.community.comment.service.CommentService;
@@ -44,8 +45,11 @@ public class CommentController {
 
     //댓글 수정
     @PatchMapping("/posts/{postId}/comments/{commentId}")
-    public ResponseEntity<CommentResponseDTO> updateComment(@PathVariable Long postId, @PathVariable Long commentId, @RequestBody CommentRequestDTO requestDTO) {
-        CommentResponseDTO updatedComment = commentService.updateComment(postId, requestDTO);
+    public ResponseEntity<CommentResponseDTO> updateComment(@PathVariable Long postId,
+                                                            @PathVariable Long commentId,
+                                                            @RequestBody CommentUpdateRequestDTO requestDTO,
+                                                            @RequestHeader Long memberId) {
+        CommentResponseDTO updatedComment = commentService.updateComment(postId, requestDTO, memberId);
         return (updatedComment != null)?
                 ResponseEntity.status(HttpStatus.OK).body(updatedComment) :
                 ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -53,8 +57,9 @@ public class CommentController {
 
     //댓글 삭제
     @DeleteMapping("/posts/{postId}/comments/{commentId}")
-    public ResponseEntity<String> deleteComment(@PathVariable Long postId, @PathVariable Long commentId) {
-        commentService.deleteComment(commentId);
+    public ResponseEntity<String> deleteComment(@PathVariable Long postId, @PathVariable Long commentId,
+                                                @RequestHeader Long memberId) {
+        commentService.deleteComment(commentId, memberId);
         return ResponseEntity.status(HttpStatus.OK).body("댓글이 삭제되었습니다.");
     }
 

@@ -4,7 +4,9 @@ import efub.assignment.community.global.domain.BaseEntity;
 import efub.assignment.community.member.domain.Member;
 import efub.assignment.community.post.domain.Post;
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity
 public class Comment extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +39,7 @@ public class Comment extends BaseEntity {
     }
 
     // Getter
+    /*
     public Long getCommentId() {
         return commentId;
     }
@@ -56,6 +59,7 @@ public class Comment extends BaseEntity {
     public Member getCommentor() {
         return commentor;
     }
+    */
 
     // Setter
     public void setContent(String content) {

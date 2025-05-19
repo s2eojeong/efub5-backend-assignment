@@ -4,6 +4,7 @@ import efub.assignment.community.member.domain.Member;
 import efub.assignment.community.board.domain.Board;
 import efub.assignment.community.board.repository.BoardRepository;
 import efub.assignment.community.member.repository.MemberRepository;
+import efub.assignment.community.member.service.MemberService;
 import efub.assignment.community.post.domain.Post;
 import efub.assignment.community.post.domain.PostLike;
 import efub.assignment.community.post.dto.request.PostRequestDTO;
@@ -20,14 +21,14 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
     private final BoardRepository boardRepository;
-    private final MemberRepository memberRepository;
     private final PostLikeRepository postLikeRepository;
+    private final MemberService memberService;
 
-    public PostService(PostRepository postRepository, BoardRepository boardRepository, MemberRepository memberRepository, PostLikeRepository postLikeRepository) {
+    public PostService(PostRepository postRepository, BoardRepository boardRepository, PostLikeRepository postLikeRepository, MemberService memberService) {
         this.postRepository = postRepository;
         this.boardRepository = boardRepository;
-        this.memberRepository = memberRepository;
         this.postLikeRepository = postLikeRepository;
+        this.memberService = memberService;
     }
 
     //게시글 생성
@@ -37,8 +38,7 @@ public class PostService {
         Board board = boardValidation(boardId);
 
         //2. 작성자 찾기
-        Member writer = memberRepository.findById(requestDTO.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException("작성자를 찾을 수 없습니다."));
+        Member writer = memberService.findMemberByMemberId(requestDTO.getMemberId());
 
         //3. Post 생성
         Post post = Post.create(
@@ -99,8 +99,8 @@ public class PostService {
         //1. post 유효성 검사
         Post post = postValidation(postId);
 
-        //2. 게시글의 좋아요 삭제
-        postLikeRepository.deleteAllByPost(post);
+        //2. 게시글의 좋아요 삭제 - cascade 제약조건 추가 하면 굳이 따로 안해도 됨
+        //postLikeRepository.deleteAllByPost(post);
 
         //3. 게시물 삭제
         postRepository.deleteById(postId);
@@ -110,8 +110,7 @@ public class PostService {
     @Transactional
     public void likePost(Long postId, Long memberId) {
         Post post = postValidation(postId);
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
+        Member member = memberService.findMemberByMemberId(memberId);
         //좋아요 여부 확인
         if(postLikeRepository.existsByPostAndMember(post, member)) {
             throw new IllegalArgumentException("이미 좋아요가 존재합니다.");
@@ -127,13 +126,13 @@ public class PostService {
     @Transactional
     public void unlikePost(Long postId, Long memberId) {
         Post post = postValidation(postId);
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
+        Member member = memberService.findMemberByMemberId(memberId);
         //좋아요 존재 여부 확인
-        if (!postLikeRepository.existsByPostAndMember(post, member)) {
-            throw new IllegalArgumentException("해당 좋아요는 존재하지 않습니다.");
-        }
-
+        //if (!postLikeRepository.existsByPostAndMember(post, member)) {
+        //    throw new IllegalArgumentException("해당 좋아요는 존재하지 않습니다.");
+        //}
+        
+        //위의 좋아요 존재 여부 확인은 필요 X -> 여기서 이미 예외 처리를 통해 좋아요 존재여부 확인하고 있음
         PostLike like = postLikeRepository.findByPostAndMember(post, member)
                 .orElseThrow(() -> new IllegalArgumentException("해당 좋아요을 찾을 수 없습니다."));
         postLikeRepository.delete(like);
