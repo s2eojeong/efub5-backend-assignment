@@ -49,15 +49,27 @@ public class CommentService {
     }
     //댓글 수정
     @Transactional
-    public void updateComment(Long commentId, CommentUpdateRequest request){
+    public void updateComment(Long commentId, CommentUpdateRequest request, Long memberId, String password){
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(()-> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
+        Member member = memberService.findByMemberId(memberId);
+        authorizeCommentWriter(comment, member,password);
+        comment.updateComment(request.getContent());
+    }
 
-        // 작성자 검증
-        if (!comment.getWriter().getMemberId().equals(request.getMemberId())) {
+    //댓글 삭제
+    @Transactional
+    public void deleteComment(Long commentId, Long memberId, String password){
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(()-> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
+        Member member = memberService.findByMemberId(memberId);
+        authorizeCommentWriter(comment,member,password);
+        commentRepository.delete(comment);
+    }
+
+    private void authorizeCommentWriter(Comment comment, Member member, String password) {
+        if (!comment.getWriter().equals(member) || !member.getPassword().equals(password)) {
             throw new IllegalArgumentException("댓글 작성자만 수정할 수 있습니다.");
         }
-
-        comment.updateComment(request.getContent());
     }
 }

@@ -31,9 +31,19 @@ public class PostCommentController {
     //댓글 수정
     @PatchMapping("/{commentId}")
     public ResponseEntity<String> updateComment(@PathVariable("commentId") Long commentId,
-                                                @RequestBody CommentUpdateRequest request){
-        commentService.updateComment(commentId,request);
+                                                @RequestBody CommentUpdateRequest request,
+                                                @RequestHeader("Auth-Id") Long memberId,
+                                                @RequestHeader("Auth-Password") String password){
+        commentService.updateComment(commentId,request, memberId, password);
         return ResponseEntity.ok("댓글이 수정되었습니다.");
     }
 
+    //댓글 삭제
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<String> deleteComment(@PathVariable("commentId") Long commentId,
+                                                @RequestHeader("Auth-Id") Long memberId,
+                                                @RequestHeader("Auth-Password") String password){
+        commentService.deleteComment(commentId, memberId, password);
+        return ResponseEntity.noContent().build();
+    }
 }
