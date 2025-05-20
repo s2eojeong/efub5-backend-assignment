@@ -20,4 +20,8 @@ public enum ClientExceptionCode {
     // Comment
     COMMENT_NOT_FOUND,
     COMMENT_ACCOUNT_MISMATCH,
+
+    // Like
+    LIKE_NOT_FOUND,
+    LIKE_ALREADY_EXISTS
 }

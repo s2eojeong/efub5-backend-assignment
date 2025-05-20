@@ -23,4 +23,13 @@ public class CommentController {
         commentService.updateCommentContent(commentId, commentUpdateRequest, memberId, password);
         return ResponseEntity.noContent().build();
     }
+
+    // 댓글 삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteComment(@PathVariable("id") Long commentId,
+                                              @RequestHeader("Auth-Id") Long memberId,
+                                              @RequestHeader("Auth-Password") String password){
+        commentService.deleteComment(commentId, memberId, password);
+        return ResponseEntity.noContent().build();
+    }
 }

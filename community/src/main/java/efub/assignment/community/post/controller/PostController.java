@@ -7,6 +7,8 @@ import efub.assignment.community.post.dto.response.PostResponse;
 import efub.assignment.community.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.net.URI;
@@ -58,6 +60,23 @@ public class PostController {
                                            @RequestHeader("Auth-Password") String password){
         postService.deletePost(postId, accountId, password);
         return ResponseEntity.noContent().build();
+    }
+
+
+    // 게시물 좋아요
+    @PostMapping("/{id}/like")
+    public ResponseEntity<String> likePost(@PathVariable("id") Long postId,
+                                           @RequestHeader("Auth-Id") Long memberId){
+        postService.likePost(postId, memberId);
+        return ResponseEntity.status(HttpStatus.CREATED).body("게시물 좋아요를 눌렀습니다.");
+    }
+
+    // 게시물 좋아요 취소
+    @DeleteMapping("/{id}/like")
+    public ResponseEntity<String> unlikePost(@PathVariable("id") Long postId,
+                                           @RequestHeader("Auth-Id") Long memberId){
+        postService.unlikePost(postId, memberId);
+        return ResponseEntity.ok("게시물 좋아요가 취소되었습니다.");
     }
 
 }

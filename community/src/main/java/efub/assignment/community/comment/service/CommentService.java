@@ -52,12 +52,22 @@ public class CommentService {
         return MemberCommentResponse.of(member, commentList);
     }
 
+    // 댓글 수정
     @Transactional
     public void updateCommentContent(Long commentId, CommentUpdateRequest request, Long memberId, String password) {
         Comment comment = findByCommentId(commentId);
         Member member = membersService.findByMemberId(memberId);
         authorizeCommentWriter(comment, member, password);
         comment.changeContent(request.content());
+    }
+
+    // 댓글 삭제
+    @Transactional
+    public void deleteComment(Long commentId, Long memberId, String password){
+        Comment comment = findByCommentId(commentId);
+        Member member = membersService.findByMemberId(memberId);
+        authorizeCommentWriter(comment, member, password);
+        commentRepository.delete(comment);
     }
 
     @Transactional(readOnly=true)
