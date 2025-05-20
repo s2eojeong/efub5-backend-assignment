@@ -4,13 +4,16 @@ import efub.assignment.community.global.domain.BaseEntity;
 import efub.assignment.community.member.domain.Member;
 import efub.assignment.community.post.domain.Post;
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity
 public class Comment extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
     private Long commentId;
 
-    @ManyToOne @JoinColumn(name = "post_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)  @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
     @Column(nullable = false)
@@ -19,7 +22,7 @@ public class Comment extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "member_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)  @JoinColumn(name = "member_id", nullable = false)
     private Member commentor;
 
     protected Comment() {};
@@ -36,6 +39,7 @@ public class Comment extends BaseEntity {
     }
 
     // Getter
+    /*
     public Long getCommentId() {
         return commentId;
     }
@@ -55,6 +59,7 @@ public class Comment extends BaseEntity {
     public Member getCommentor() {
         return commentor;
     }
+    */
 
     // Setter
     public void setContent(String content) {

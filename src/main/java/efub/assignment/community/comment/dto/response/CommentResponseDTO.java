@@ -32,6 +32,7 @@ public class CommentResponseDTO {
         return commentorId;
     }
 
+    //정적 팩토리 메서드
     public static CommentResponseDTO from (Comment comment) {
         return new CommentResponseDTO(
                 comment.getCommentId(),

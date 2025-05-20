@@ -3,13 +3,13 @@ package efub.assignment.community.comment.service;
 import efub.assignment.community.board.service.BoardService;
 import efub.assignment.community.comment.domain.Comment;
 import efub.assignment.community.comment.dto.request.CommentRequestDTO;
+import efub.assignment.community.comment.dto.request.CommentUpdateRequestDTO;
 import efub.assignment.community.comment.dto.response.CommentListResponseDTO;
 import efub.assignment.community.comment.dto.response.CommentResponseDTO;
 import efub.assignment.community.comment.repository.CommentRepository;
 import efub.assignment.community.member.domain.Member;
-import efub.assignment.community.member.repository.MemberRepository;
+import efub.assignment.community.member.service.MemberService;
 import efub.assignment.community.post.domain.Post;
-import efub.assignment.community.post.repository.PostRepository;
 import efub.assignment.community.post.service.PostService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,14 +18,14 @@ import java.util.List;
 
 @Service
 public class CommentService {
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final BoardService boardService;
     private final PostService postService;
     private final CommentRepository commentRepository;
 
 
-    public CommentService(MemberRepository memberRepository, BoardService boardService, PostService postService, CommentRepository commentRepository) {
-        this.memberRepository = memberRepository;
+    public CommentService(MemberService memberService, BoardService boardService, PostService postService, CommentRepository commentRepository) {
+        this.memberService = memberService;
         this.boardService = boardService;
         this.postService = postService;
         this.commentRepository = commentRepository;
@@ -34,7 +34,7 @@ public class CommentService {
     public CommentResponseDTO create(Long postId, CommentRequestDTO requestDTO) {
         //1. 유효성 검사
         Post post = postService.postValidation(postId);
-        Member commentor = memberRepository.findById(requestDTO.getCommentorId()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+        Member commentor = memberService.findMemberByMemberId(requestDTO.getCommentorId());
 
         //2. RequestDTO -> entity
         Comment newComment = Comment.create(
@@ -70,21 +70,32 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentResponseDTO updateComment(Long postId, Long commentId, CommentRequestDTO requestDTO) {
+    public CommentResponseDTO updateComment(Long commentId, CommentUpdateRequestDTO requestDTO, Long memberId) {
         //1. commentId 유효성 검사
         Comment comment = commentValidation(commentId);
-        //2. comment 수정
+        //2. commmentor과 현재 로그인한 사용자 동일한지 확인
+        Member member = memberService.findMemberByMemberId(memberId);
+        Comment validComment = commentRepository.findByCommentAndAccount(comment, member)
+                    .orElseThrow(()-> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
+        //3. comment 수정
         comment.setContent(requestDTO.getContent());
-        //3. DTO 반환
+        //4. DTO 반환
         return CommentResponseDTO.from(comment);
     }
 
     @Transactional
-    public void deleteComment(Long commentId) {
+    public void deleteComment(Long commentId, Long memberId) {
         Comment comment = commentValidation(commentId);
+
+        //해당 comment를 작성한 사용자가 현재 로그인된 사용자와 일치하는지도 체크 필요!!
+        Member member = memberService.findMemberByMemberId(memberId);
+        Comment validComment = commentRepository.findByCommentAndAccount(comment, member)
+                        .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
         commentRepository.delete(comment);
     }
+//++ 자바는 같은 메서드 스코프 안에서 동일한 이름으로 변수 두 번 선언 불가능 !!
 
+    //CommentId 유효성 검사
     public Comment commentValidation(Long commentId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
         return comment;

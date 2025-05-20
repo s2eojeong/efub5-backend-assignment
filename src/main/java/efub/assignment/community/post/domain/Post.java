@@ -31,6 +31,10 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
     private List<Comment> commentList = new ArrayList<>();
 
+    //postLike와 양방향 매핑 생성 (post:postLike = 1:N)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private PostLike postLike;
+
     protected Post() {}
     private Post(Board board, Member writer, boolean anonymity, String content){
         this.board = board;

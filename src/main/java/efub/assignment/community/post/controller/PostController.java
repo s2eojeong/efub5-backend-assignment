@@ -19,14 +19,15 @@ public class PostController {
     }
 
     // 게시글 생성
-    @PostMapping("/")
+    //@PostMapping("/")     -- RESTful API에서는 URL 끝에 슬래시(/) 붙이지 않는 것이 관례임
+    @PostMapping
     public ResponseEntity<PostResponseDTO> createPost(@PathVariable Long boardId, @RequestBody PostRequestDTO requestDTO){
         PostResponseDTO responseDTO = postService.createPost(boardId, requestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
     // 게시글 목록 조회
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<PostListResponseDTO> getPostList(@PathVariable Long boardId) {
         PostListResponseDTO responseDTO = postService.getPostList(boardId);
         return ResponseEntity.status(HttpStatus.OK).body(responseDTO);
@@ -53,4 +54,19 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body("게시물이 삭제되었습니다.");
     }
 
+    // 게시글 좋아요 등록
+    @PostMapping("/{postId}/like")
+    public ResponseEntity<String> likePost(@PathVariable Long postId,
+                                           @RequestHeader("memberId") Long memberId) {
+        postService.likePost(postId, memberId);
+        return ResponseEntity.status(HttpStatus.OK).body("좋아요가 생성되었습니다.");
+    }
+
+    // 게시글 좋아요 취소
+    @DeleteMapping("/{postId}/like")
+    public ResponseEntity<String> unlikePost(@PathVariable Long postId,
+                                             @RequestHeader("memberId") Long memberId) {
+        postService.deletePost(postId, memberId);
+        return ResponseEntity.status(HttpStatus.OK).body("좋아요가 취소되었습니다.");
+    }
 }
