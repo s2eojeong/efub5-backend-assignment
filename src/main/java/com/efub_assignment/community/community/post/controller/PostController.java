@@ -36,13 +36,13 @@ public class PostController {
 
     //게시물 내용 조회
     @GetMapping("/{postId}")
-    public ResponseEntity<PostResponse> getPost(@PathVariable("id") Long postId){
+    public ResponseEntity<PostResponse> getPost(@PathVariable("postId") Long postId){
         return ResponseEntity.ok(postService.getPost(postId));
     }
 
     //게시물 내용 수정
     @PatchMapping("/{postId}")
-    public ResponseEntity<Void> updatePostContent(@PathVariable("id") Long postId,
+    public ResponseEntity<Void> updatePostContent(@PathVariable("postId") Long postId,
                                                   @RequestHeader("Auth-Id") Long memberId,
                                                   @RequestHeader("Auth-password") String password,
                                                   @Valid @RequestBody PostUpdateRequest postUpdateRequest){
@@ -52,7 +52,7 @@ public class PostController {
 
     // 게시물 삭제
     @DeleteMapping("/{postId}")
-    public ResponseEntity<Void> deletePost(@PathVariable("id") Long postId,
+    public ResponseEntity<Void> deletePost(@PathVariable("postId") Long postId,
                                            @RequestHeader("Auth-Id") Long memberId,
                                            @RequestHeader("Auth-password") String password){
         postService.deletePost(postId, memberId, password);
