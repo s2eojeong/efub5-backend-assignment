@@ -17,4 +17,6 @@ public interface MessageRoomRepository extends JpaRepository<MessageRoom, Long> 
     @Query("SELECT mr FROM MessageRoom mr WHERE mr.sender.memberId = :memberId OR mr.receiver.memberId = :memberId ORDER BY mr.id DESC")
     List<MessageRoom> findAllByMembers_MemberId(@Param("memberId") Long memberId);
 
+
+
 }
