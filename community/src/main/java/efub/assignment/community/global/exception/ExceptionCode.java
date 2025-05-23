@@ -20,6 +20,8 @@ public enum ExceptionCode {
     BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, ClientExceptionCode.BOARD_NOT_FOUND, "게시판이 존재하지 않습니다."),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, ClientExceptionCode.COMMENT_NOT_FOUND, "댓글이 존재하지 않습니다."),
     LIKE_NOT_FOUND(HttpStatus.NOT_FOUND, ClientExceptionCode.LIKE_NOT_FOUND, "댓글 좋아요가 존재하지 않습니다."),
+    MESSAGE_ROOM_NOT_FOUND(HttpStatus.NOT_FOUND, ClientExceptionCode.MESSAGE_ROOM_NOT_FOUND, "쪽지방이 존재하지 않습니다."),
+
 
     // 409 Conflict
     LIKE_ALREADY_EXISTS(HttpStatus.CONFLICT, ClientExceptionCode.LIKE_ALREADY_EXISTS, "이미 좋아요를 누르셨습니다."),

@@ -23,5 +23,8 @@ public enum ClientExceptionCode {
 
     // Like
     LIKE_NOT_FOUND,
-    LIKE_ALREADY_EXISTS
+    LIKE_ALREADY_EXISTS,
+
+    // Message_Room
+    MESSAGE_ROOM_NOT_FOUND
 }
