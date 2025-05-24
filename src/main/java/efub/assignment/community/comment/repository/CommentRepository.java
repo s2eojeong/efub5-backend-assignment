@@ -12,6 +12,4 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findAllByPost(Post post);
     //findAllBy(실제필드이름)
     List<Comment> findAllByCommentor(Member commentor);
-
-    Optional<Comment> findByCommentAndAccount(Comment comment, Member member);
 }
