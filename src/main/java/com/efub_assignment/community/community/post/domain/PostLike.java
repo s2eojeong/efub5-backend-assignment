@@ -22,7 +22,7 @@ public class PostLike {
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_Id", updatable = false, nullable = false)
+    @JoinColumn(name = "member_id", updatable = false, nullable = false)
     private Member member;
 
     @Builder
