@@ -1,6 +1,8 @@
 package efub.assignment.community.comment.service;
 
 
+import efub.assignment.community.alarm.Alarm;
+import efub.assignment.community.alarm.AlarmRepository;
 import efub.assignment.community.comment.domain.Comment;
 import efub.assignment.community.comment.dto.request.CommentRequest;
 import efub.assignment.community.comment.dto.request.CommentUpdateRequest;
@@ -28,7 +30,9 @@ public class CommentService {
     private final MembersService membersService;
     private final PostService postService;
     private final CommentRepository commentRepository;
+    private final AlarmRepository alarmRepository;
 
+    // 댓글 생성
     @Transactional
     public Long createComment(Long postId, CommentRequest commentRequest){
         Long memberId = commentRequest.getMemberId();
@@ -36,6 +40,12 @@ public class CommentService {
         Post post = postService.findByPostId(postId);
         Comment newComment = commentRequest.toEntity(writer, post);
         commentRepository.save(newComment);
+
+        alarmRepository.save(Alarm.builder()
+                .memberId(writer.getMemberId()) // 쪽지를 받은 사람에게 알림!
+                .type("messageRoom")
+                .content("새로운 댓글이 생겼어요")
+                .build());
         return newComment.getId();
     }
 
