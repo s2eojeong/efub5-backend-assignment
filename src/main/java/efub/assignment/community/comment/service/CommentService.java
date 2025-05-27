@@ -75,8 +75,9 @@ public class CommentService {
         Comment comment = commentValidation(commentId);
         //2. commmentor과 현재 로그인한 사용자 동일한지 확인
         Member member = memberService.findMemberByMemberId(memberId);
-        Comment validComment = commentRepository.findByCommentAndAccount(comment, member)
-                    .orElseThrow(()-> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
+        if(!comment.getCommentor().equals(member)) {
+            throw new IllegalArgumentException("해당 댓글이 존재하지 않습니다.");
+        }
         //3. comment 수정
         comment.setContent(requestDTO.getContent());
         //4. DTO 반환
@@ -89,8 +90,9 @@ public class CommentService {
 
         //해당 comment를 작성한 사용자가 현재 로그인된 사용자와 일치하는지도 체크 필요!!
         Member member = memberService.findMemberByMemberId(memberId);
-        Comment validComment = commentRepository.findByCommentAndAccount(comment, member)
-                        .orElseThrow(() -> new IllegalArgumentException("해당 댓글이 존재하지 않습니다."));
+        if(!comment.getCommentor().equals(member)) {
+            throw new IllegalArgumentException("해당 댓글이 존재하지 않습니다.");
+        }
         commentRepository.delete(comment);
     }
 //++ 자바는 같은 메서드 스코프 안에서 동일한 이름으로 변수 두 번 선언 불가능 !!
