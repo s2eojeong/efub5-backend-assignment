@@ -17,7 +17,7 @@ public class MessageResponseDTO {
 
     public static MessageResponseDTO from(Message message) {
         return new MessageResponseDTO(
-                message.getMessageId(),
+                message.getMessageRoom().getMessageRoomId(),
                 message.getSender().getMemberId(),
                 message.getReceiver().getMemberId(),
                 message.getText(),
