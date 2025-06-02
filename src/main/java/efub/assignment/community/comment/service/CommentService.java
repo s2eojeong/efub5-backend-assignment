@@ -9,6 +9,9 @@ import efub.assignment.community.comment.dto.response.CommentResponseDTO;
 import efub.assignment.community.comment.repository.CommentRepository;
 import efub.assignment.community.member.domain.Member;
 import efub.assignment.community.member.service.MemberService;
+import efub.assignment.community.notification.domain.Notification;
+import efub.assignment.community.notification.domain.NotificationType;
+import efub.assignment.community.notification.repository.NotificationRepository;
 import efub.assignment.community.post.domain.Post;
 import efub.assignment.community.post.service.PostService;
 import org.springframework.stereotype.Service;
@@ -22,20 +25,25 @@ public class CommentService {
     private final BoardService boardService;
     private final PostService postService;
     private final CommentRepository commentRepository;
+    private final NotificationRepository notificationRepository;
 
 
-    public CommentService(MemberService memberService, BoardService boardService, PostService postService, CommentRepository commentRepository) {
+    public CommentService(MemberService memberService, BoardService boardService, PostService postService, CommentRepository commentRepository, NotificationRepository notificationRepository) {
         this.memberService = memberService;
         this.boardService = boardService;
         this.postService = postService;
         this.commentRepository = commentRepository;
+        this.notificationRepository = notificationRepository;
     }
 
+    @Transactional
     public CommentResponseDTO create(Long postId, CommentRequestDTO requestDTO) {
         //1. 유효성 검사
         Post post = postService.postValidation(postId);
         Member commentor = memberService.findMemberByMemberId(requestDTO.getCommentorId());
-
+        //2. 알림 생성 및 저장
+        Notification noti = Notification.create(post.getWriter(), NotificationType.COMMENT, "새로운 댓글이 있습니다", post.getBoard().getBoardName(), requestDTO.getContent());
+        notificationRepository.save(noti);
         //2. RequestDTO -> entity
         Comment newComment = Comment.create(
                 post,
